@@ -1,17 +1,13 @@
-using Entities;
+using Business.Mapping;
+using DataAccess.Abstract;
+using DataAccess.Concrete;
 using Entities.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace WebUI
 {
     public class Startup
@@ -32,12 +28,16 @@ namespace WebUI
 
             services.Configure<MongoSettings>(Configuration.GetSection("MongoSettings"));
 
-            services.AddSingleton<IMongoSettings>(sp =>
+            services.AddSingleton<MongoSettings>(sp =>
             {
                 return sp.GetRequiredService<IOptions<MongoSettings>>().Value;
             });
 
+
+            services.AddSingleton<IQuestionDal, QuestionDal>();
+            services.AddSingleton<IAnswerDal, AnswerDal>();
             services.AddControllersWithViews();
+            services.AddAutoMapper(typeof(GeneralMapping));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

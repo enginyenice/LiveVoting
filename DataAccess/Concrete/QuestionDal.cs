@@ -1,7 +1,10 @@
 ﻿using DataAccess.Abstract;
 using Entities;
+using Entities.Settings;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,29 +12,43 @@ namespace DataAccess.Concrete
 {
     public class QuestionDal : IQuestionDal
     {
-        public Task CreateAsync(Question question)
+        private readonly IMongoCollection<Question> _collection;
+        public QuestionDal(MongoSettings mongoSettings)
         {
-            throw new NotImplementedException();
+            var client = new MongoClient(mongoSettings.ConnectionString);
+            var database = client.GetDatabase(mongoSettings.DatabaseName);
+            _collection = database.GetCollection<Question>(mongoSettings.QuestionCollectionName);
         }
 
-        public Task DeleteAsync(string id)
+        public async Task CreateAsync(Question question)
         {
-            throw new NotImplementedException();
+            await _collection.InsertOneAsync(question);
         }
 
-        public Task<List<Question>> GetAllAsync()
+        public async Task DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            await _collection.DeleteOneAsync(p => p.Id == id);
         }
 
-        public Task<Question> GetQuestionById(string id)
+        public async Task<List<Question>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var questions = await _collection.Find(question => true).ToListAsync();
+            if (!questions.Any())
+            {
+                return new List<Question>();
+            }
+            return questions;
         }
 
-        public Task UpdateAsync(Question question)
+        public async Task<Question> GetQuestionById(string id)
         {
-            throw new NotImplementedException();
+            var question = await _collection.FindAsync(p => p.Id == id);
+            return await question.FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateAsync(Question question)
+        {
+            var result = await _collection.FindOneAndReplaceAsync(p => p.Id == question.Id,question);
         }
     }
 }
