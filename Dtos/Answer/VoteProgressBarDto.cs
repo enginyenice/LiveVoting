@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
 
-namespace Dtos.Question
+namespace Dtos.Answer
 {
-    public class QuestionDto
+    public class VoteProgressBarDto
     {
         public string Id { get; set; }
+        public decimal Percent { get; set; } = 0;
         public string Title { get; set; }
-
     }
 }

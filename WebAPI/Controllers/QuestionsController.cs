@@ -27,5 +27,17 @@ namespace WebAPI.Controllers
             return Ok(await _questionService.CreateAsync(createQuestionDto));
 
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetQuestion(string id)
+        {
+            return Ok(await _questionService.GetQuestionByIdAsync(id));
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _questionService.GetAllAsync());
+
+        }
     }
 }

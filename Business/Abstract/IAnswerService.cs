@@ -15,5 +15,6 @@ namespace Business.Abstract
         Task<Response<NoContent>> DeleteAsync(string id);
         Task<Response<NoContent>> VoteAsync(string id);
         Task<Response<List<AnswerVoteDto>>> GetAnswerByQuestionIdAsync(string questionId);
+        Task<Response<List<VoteProgressBarDto>>> GetProgressBar(string questionId);
     }
 }

@@ -1,5 +1,6 @@
 using Business.Abstract;
 using Business.Concreate;
+using Business.Hubs;
 using Business.Mapping;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
@@ -40,7 +41,13 @@ namespace WebAPI
                 return sp.GetRequiredService<IOptions<MongoSettings>>().Value;
             });
 
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ReactAPPPolicy", builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
+                });
+            });
             services.AddSingleton<IQuestionDal, QuestionDal>();
             services.AddSingleton<IAnswerDal, AnswerDal>();
             services.AddSingleton<IQuestionService, QuestionManager>();
@@ -48,7 +55,7 @@ namespace WebAPI
             services.AddControllersWithViews();
             services.AddAutoMapper(typeof(GeneralMapping));
             services.AddSwaggerGen();
-
+            services.AddSignalR();
             services.AddControllers();
         }
 
@@ -66,7 +73,7 @@ namespace WebAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-
+            app.UseCors("ReactAPPPolicy");
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -75,6 +82,7 @@ namespace WebAPI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<MyHub>("/MyHub");
                 endpoints.MapControllers();
             });
         }

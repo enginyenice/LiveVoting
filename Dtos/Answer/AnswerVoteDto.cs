@@ -6,6 +6,9 @@ namespace Dtos.Answer
 {
     public class AnswerVoteDto
     {
-        public string AnswerId { get; set; }
+        public string Id { get; set; }
+        public string QuestionId { get; set; }
+        public string Title { get; set; }
+        public int Vote { get; set; }
     }
 }
