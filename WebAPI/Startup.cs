@@ -44,6 +44,7 @@ namespace WebAPI
             services.AddSingleton<IQuestionDal, QuestionDal>();
             services.AddSingleton<IAnswerDal, AnswerDal>();
             services.AddSingleton<IQuestionService, QuestionManager>();
+            services.AddSingleton<IAnswerService, AnswerManager>();
             services.AddControllersWithViews();
             services.AddAutoMapper(typeof(GeneralMapping));
             services.AddSwaggerGen();

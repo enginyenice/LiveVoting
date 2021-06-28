@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dtos.Answer;
 using Dtos.Question;
 using Entities;
 using System;
@@ -13,6 +14,9 @@ namespace Business.Mapping
         {
             CreateMap<Question, QuestionDto>().ReverseMap();
             CreateMap<Question, CreateQuestionDto>().ReverseMap();
+
+            CreateMap<Answer, CreateAnswerDto>().ReverseMap();
+            CreateMap<Answer, AnswerVoteDto>().ReverseMap();
         }
     }
 }

@@ -10,9 +10,10 @@ namespace Business.Abstract
     public interface IAnswerService
     {
         Task<Response<NoContent>> CreateAsync(CreateAnswerDto createAnswerDto);
+        Task<Response<NoContent>> CreateListAsync(List<CreateAnswerDto> createAnswersDto);
         Task<Response<NoContent>> UpdateAsync(CreateAnswerDto createAnswerDto);
         Task<Response<NoContent>> DeleteAsync(string id);
-        Task<Response<List<AnswerVoteDto>>> GetAnswerByQuestionIdAsync(string id);
-        //Task<Response<List<QuestionDto>>> GetAllAsync();
+        Task<Response<NoContent>> VoteAsync(string id);
+        Task<Response<List<AnswerVoteDto>>> GetAnswerByQuestionIdAsync(string questionId);
     }
 }
