@@ -12,7 +12,7 @@ namespace DataAccess.Abstract
         Task UpdateAsync(Question question);
         Task DeleteAsync(string id);
         Task<List<Question>> GetAllAsync();
-        Task<Question> GetQuestionById(string id);
+        Task<Question> GetQuestionByIdAsync(string id);
 
     }
 }

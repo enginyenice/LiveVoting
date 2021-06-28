@@ -40,7 +40,7 @@ namespace DataAccess.Concrete
             return questions;
         }
 
-        public async Task<Question> GetQuestionById(string id)
+        public async Task<Question> GetQuestionByIdAsync(string id)
         {
             var question = await _collection.FindAsync(p => p.Id == id);
             return await question.FirstOrDefaultAsync();

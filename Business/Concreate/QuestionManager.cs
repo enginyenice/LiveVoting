@@ -22,25 +22,43 @@ namespace Business.Concreate
             _mapper = mapper;
         }
 
-        public Task<Response<NoContent>> CreateAsync(CreateQuestionDto createQuestionDto)
+        public async Task<Response<NoContent>> CreateAsync(CreateQuestionDto createQuestionDto)
         {
-            
-            throw new NotImplementedException();
+
+            Question question = _mapper.Map<Question>(createQuestionDto);
+            await _questionDal.CreateAsync(question);
+            return Response<NoContent>.Success();
+
+
         }
 
-        public Task<Response<NoContent>> DeleteAsync(string id)
+        public async Task<Response<NoContent>> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            var question = await _questionDal.GetQuestionByIdAsync(id);
+            if (question == null)
+            {
+                return Response<NoContent>.Fail("Soru bulunamadı.");
+            }
+            await _questionDal.DeleteAsync(question.Id);
+            return Response<NoContent>.Success();
         }
 
-        public Task<Response<List<QuestionDto>>> GetAllAsync()
+        public async Task<Response<List<QuestionDto>>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var questions = await _questionDal.GetAllAsync();
+            var questionsDto = _mapper.Map<List<QuestionDto>>(questions);
+            return Response<List<QuestionDto>>.Success(questionsDto);
         }
 
-        public Task<Response<QuestionDto>> GetQuestionByIdAsync(string id)
+        public async Task<Response<QuestionDto>> GetQuestionByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var question = await _questionDal.GetQuestionByIdAsync(id);
+            if (question == null)
+            {
+                return Response<QuestionDto>.Fail("Soru bulunamadı.");
+            }
+            var questionDto = _mapper.Map<QuestionDto>(question);
+            return Response<QuestionDto>.Success(questionDto);
         }
 
         public Task<Response<NoContent>> UpdateAsync(CreateQuestionDto createQuestionDto)
