@@ -2,10 +2,8 @@
 using Entities;
 using Entities.Settings;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccess.Concrete
@@ -13,6 +11,7 @@ namespace DataAccess.Concrete
     public class QuestionDal : IQuestionDal
     {
         private readonly IMongoCollection<Question> _collection;
+
         public QuestionDal(MongoSettings mongoSettings)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);
@@ -48,7 +47,7 @@ namespace DataAccess.Concrete
 
         public async Task UpdateAsync(Question question)
         {
-            var result = await _collection.FindOneAndReplaceAsync(p => p.Id == question.Id,question);
+            var result = await _collection.FindOneAndReplaceAsync(p => p.Id == question.Id, question);
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using Entities.Settings;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Entities.Settings
+﻿namespace Entities.Settings
 {
     public class MongoSettings : IMongoSettings
     {

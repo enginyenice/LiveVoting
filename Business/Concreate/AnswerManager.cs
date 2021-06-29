@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business.Concreate
@@ -21,6 +20,7 @@ namespace Business.Concreate
         private readonly IIpAdressService _ipAdressService;
         private readonly IMapper _mapper;
         private readonly IHubContext<MyHub> _hubContext;
+
         public AnswerManager(IAnswerDal answerDal, IMapper mapper, IHubContext<MyHub> hubContext, IIpAdressService ipAdressService)
         {
             _answerDal = answerDal;
@@ -77,7 +77,6 @@ namespace Business.Concreate
                 voteProgressBarDtos.Add(voteProgressBarDto);
             });
             return Response<List<VoteProgressBarDto>>.Success(voteProgressBarDtos);
-
         }
 
         public Task<Response<NoContent>> UpdateAsync(CreateAnswerDto createAnswerDto)
@@ -92,7 +91,7 @@ namespace Business.Concreate
             {
                 return Response<NoContent>.Fail("Şık bulunamadı.");
             }
-            var result = await _ipAdressService.CheckIfIpAdress(answer.QuestionId,answerVoteAddDto.IpAdress);
+            var result = await _ipAdressService.CheckIfIpAdress(answer.QuestionId, answerVoteAddDto.IpAdress);
             if (!result.IsSuccess)
             {
                 return Response<NoContent>.Fail("Bu oylamaya daha önceden katıldınız. Tekrar oy kullanamazsınız");

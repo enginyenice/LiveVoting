@@ -8,7 +8,6 @@ using Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business.Concreate
@@ -41,7 +40,6 @@ namespace Business.Concreate
                 return Response<QuestionDto>.Fail("En az 2 şık girilmelidir");
             }
 
-
             Question question = _mapper.Map<Question>(createQuestionDto);
             await _questionDal.CreateAsync(question);
 
@@ -56,7 +54,6 @@ namespace Business.Concreate
             }
             await _answerService.CreateListAsync(createAnswerDtos);
 
-            
             return Response<QuestionDto>.Success(_mapper.Map<QuestionDto>(question));
         }
 
@@ -78,8 +75,8 @@ namespace Business.Concreate
             var questionsDto = _mapper.Map<List<QuestionDto>>(questions);
             foreach (var item in questionsDto)
             {
-                var answers =await _answerService.GetAnswerByQuestionIdAsync(item.Id);
-                item.Total= answers.Data.Sum(p => p.Vote);
+                var answers = await _answerService.GetAnswerByQuestionIdAsync(item.Id);
+                item.Total = answers.Data.Sum(p => p.Vote);
             }
 
             questionsDto = questionsDto.OrderByDescending(p => p.Total).Take(10).ToList();

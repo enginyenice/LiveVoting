@@ -3,9 +3,6 @@ using Dtos.Answer;
 using Dtos.IpAdress;
 using Dtos.Question;
 using Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Business.Mapping
 {
@@ -18,7 +15,7 @@ namespace Business.Mapping
 
             CreateMap<Answer, CreateAnswerDto>().ReverseMap();
             CreateMap<Answer, AnswerVoteDto>().ReverseMap();
-          
+
             CreateMap<IpAdress, IpAdressDto>().ReverseMap();
         }
     }

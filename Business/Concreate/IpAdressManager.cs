@@ -2,12 +2,8 @@
 using Business.Abstract;
 using Core.Response;
 using DataAccess.Abstract;
-using Dtos.Answer;
 using Dtos.IpAdress;
 using Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business.Concreate
@@ -30,11 +26,10 @@ namespace Business.Concreate
             return Response<NoContent>.Success();
         }
 
-
-        public async Task<Response<NoContent>> CheckIfIpAdress(string questionId,string ipAdress)
+        public async Task<Response<NoContent>> CheckIfIpAdress(string questionId, string ipAdress)
         {
-            var result = await _ipAdressDal.CheckIfIpAdress(questionId,ipAdress);
-            
+            var result = await _ipAdressDal.CheckIfIpAdress(questionId, ipAdress);
+
             if (result)
             {
                 return Response<NoContent>.Fail("Daha önceden bu ankete oy kullandınız");

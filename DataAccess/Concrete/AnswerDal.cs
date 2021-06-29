@@ -4,7 +4,6 @@ using Entities.Settings;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccess.Concrete
@@ -12,12 +11,14 @@ namespace DataAccess.Concrete
     public class AnswerDal : IAnswerDal
     {
         private readonly IMongoCollection<Answer> _collection;
+
         public AnswerDal(MongoSettings mongoSettings)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);
             var database = client.GetDatabase(mongoSettings.DatabaseName);
             _collection = database.GetCollection<Answer>(mongoSettings.AnswerCollectionName);
         }
+
         public async Task CreateAsync(Answer answer)
         {
             await _collection.InsertOneAsync(answer);
@@ -50,13 +51,11 @@ namespace DataAccess.Concrete
             throw new NotImplementedException();
         }
 
-
         // TODO: Daha generic bir çözüm bulunacak +1 yerine
         public async Task VoteAsync(Answer answer)
         {
             answer.Vote++;
-            await _collection.FindOneAndReplaceAsync(p => p.Id == answer.Id,answer);
-
+            await _collection.FindOneAndReplaceAsync(p => p.Id == answer.Id, answer);
         }
     }
 }

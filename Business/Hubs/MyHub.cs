@@ -1,8 +1,5 @@
 ﻿using Business.Abstract;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business.Hubs
@@ -20,10 +17,10 @@ namespace Business.Hubs
         {
             await Clients.Group($"ReceiveQuestion-{questionId}").SendAsync("ReceiveProgressBar", _answerService.GetProgressBar(questionId));
         }
+
         public async Task AddToGroup(string questionId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, $"ReceiveQuestion-{questionId}");
-
         }
     }
 }
