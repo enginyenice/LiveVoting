@@ -41,17 +41,22 @@ namespace WebAPI
                 return sp.GetRequiredService<IOptions<MongoSettings>>().Value;
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("ReactAPPPolicy", builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
-                });
-            });
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                    builder =>
+                    {
+                        builder.AllowAnyHeader()
+                               .AllowAnyMethod()
+                               .SetIsOriginAllowed((host) => true)
+                               .AllowCredentials();
+                    }));
             services.AddSingleton<IQuestionDal, QuestionDal>();
             services.AddSingleton<IAnswerDal, AnswerDal>();
+            services.AddSingleton<IIpAdressDal, IpAdressDal>();
+
             services.AddSingleton<IQuestionService, QuestionManager>();
             services.AddSingleton<IAnswerService, AnswerManager>();
+            services.AddSingleton<IIpAdressService, IpAdressManager>();
+
             services.AddControllersWithViews();
             services.AddAutoMapper(typeof(GeneralMapping));
             services.AddSwaggerGen();
@@ -62,6 +67,12 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("CorsPolicy");
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MyHub>("/MyHub");
+            });
+            //app.UseCors("ReactAPPPolicy");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -73,16 +84,15 @@ namespace WebAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.UseCors("ReactAPPPolicy");
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MyHub>("/MyHub");
+                //endpoints.MapHub<MyHub>("/MyHub");
                 endpoints.MapControllers();
             });
         }

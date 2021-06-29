@@ -4,6 +4,7 @@ using Business.Hubs;
 using Core.Response;
 using DataAccess.Abstract;
 using Dtos.Answer;
+using Dtos.IpAdress;
 using Entities;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -17,13 +18,15 @@ namespace Business.Concreate
     public class AnswerManager : IAnswerService
     {
         private readonly IAnswerDal _answerDal;
+        private readonly IIpAdressService _ipAdressService;
         private readonly IMapper _mapper;
         private readonly IHubContext<MyHub> _hubContext;
-        public AnswerManager(IAnswerDal answerDal, IMapper mapper, IHubContext<MyHub> hubContext)
+        public AnswerManager(IAnswerDal answerDal, IMapper mapper, IHubContext<MyHub> hubContext, IIpAdressService ipAdressService)
         {
             _answerDal = answerDal;
             _mapper = mapper;
             _hubContext = hubContext;
+            _ipAdressService = ipAdressService;
         }
 
         public async Task<Response<NoContent>> CreateAsync(CreateAnswerDto createAnswerDto)
@@ -70,6 +73,7 @@ namespace Business.Concreate
                 voteProgressBarDto.Percent = (total > 0) ? (x.Vote * 100) / total : total;
                 voteProgressBarDto.Title = x.Title;
                 voteProgressBarDto.Id = x.Id;
+                voteProgressBarDto.Vote = x.Vote;
                 voteProgressBarDtos.Add(voteProgressBarDto);
             });
             return Response<List<VoteProgressBarDto>>.Success(voteProgressBarDtos);
@@ -81,15 +85,27 @@ namespace Business.Concreate
             throw new NotImplementedException();
         }
 
-        public async Task<Response<NoContent>> VoteAsync(string id)
+        public async Task<Response<NoContent>> VoteAsync(AnswerVoteAddDto answerVoteAddDto)
         {
-            var answer =await _answerDal.GetAnswerByIdAsync(id);
-            if(answer == null)
+            var answer = await _answerDal.GetAnswerByIdAsync(answerVoteAddDto.Id);
+            if (answer == null)
             {
                 return Response<NoContent>.Fail("Şık bulunamadı.");
             }
+            var result = await _ipAdressService.CheckIfIpAdress(answer.QuestionId,answerVoteAddDto.IpAdress);
+            if (!result.IsSuccess)
+            {
+                return Response<NoContent>.Fail("Bu oylamaya daha önceden katıldınız. Tekrar oy kullanamazsınız");
+            }
+            IpAdressDto ipAdressDto = new IpAdressDto() { QuestionId = answer.QuestionId, Adress = answerVoteAddDto.IpAdress };
+            var ipServiceResult = await _ipAdressService.CreatedAsync(ipAdressDto);
+            if (!ipServiceResult.IsSuccess)
+            {
+                return Response<NoContent>.Fail("Beklenmedik bir hata oluştu");
+            }
+
             await _answerDal.VoteAsync(answer); // 1 oy arttır.
-            await _hubContext.Clients.Group($"ReceiveQuestion-{answer.QuestionId}").SendAsync("ReceiveProgressBar",await GetProgressBar(answer.QuestionId));
+            await _hubContext.Clients.Group($"ReceiveQuestion-{answer.QuestionId}").SendAsync("ReceiveProgressBar", await GetProgressBar(answer.QuestionId));
             return Response<NoContent>.Success();
         }
     }

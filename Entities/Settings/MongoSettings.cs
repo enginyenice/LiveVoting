@@ -11,5 +11,6 @@ namespace Entities.Settings
         public string DatabaseName { get; set; }
         public string QuestionCollectionName { get; set; }
         public string AnswerCollectionName { get; set; }
+        public string IpAdressCollectionName { get; set; }
     }
 }

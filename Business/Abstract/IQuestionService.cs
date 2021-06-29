@@ -9,7 +9,7 @@ namespace Business.Abstract
 {
     public interface IQuestionService
     {
-        Task<Response<NoContent>> CreateAsync(CreateQuestionDto createQuestionDto);
+        Task<Response<QuestionDto>> CreateAsync(CreateQuestionDto createQuestionDto);
         Task<Response<NoContent>> UpdateAsync(CreateQuestionDto createQuestionDto);
         Task<Response<NoContent>> DeleteAsync(string id);
         Task<Response<QuestionDto>> GetQuestionByIdAsync(string id);

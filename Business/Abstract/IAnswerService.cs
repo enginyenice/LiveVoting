@@ -13,8 +13,9 @@ namespace Business.Abstract
         Task<Response<NoContent>> CreateListAsync(List<CreateAnswerDto> createAnswersDto);
         Task<Response<NoContent>> UpdateAsync(CreateAnswerDto createAnswerDto);
         Task<Response<NoContent>> DeleteAsync(string id);
-        Task<Response<NoContent>> VoteAsync(string id);
+        Task<Response<NoContent>> VoteAsync(AnswerVoteAddDto answerVoteAddDto);
         Task<Response<List<AnswerVoteDto>>> GetAnswerByQuestionIdAsync(string questionId);
         Task<Response<List<VoteProgressBarDto>>> GetProgressBar(string questionId);
+
     }
 }

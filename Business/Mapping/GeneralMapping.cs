@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dtos.Answer;
+using Dtos.IpAdress;
 using Dtos.Question;
 using Entities;
 using System;
@@ -17,6 +18,8 @@ namespace Business.Mapping
 
             CreateMap<Answer, CreateAnswerDto>().ReverseMap();
             CreateMap<Answer, AnswerVoteDto>().ReverseMap();
+          
+            CreateMap<IpAdress, IpAdressDto>().ReverseMap();
         }
     }
 }

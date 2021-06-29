@@ -15,5 +15,6 @@ namespace DataAccess.Abstract
         Task<List<Answer>> GetAnswerByQuestionIdAsync(string questionId);
         Task<Answer> GetAnswerByIdAsync(string id);
         Task VoteAsync(Answer answer);
+        
     }
 }

@@ -7,6 +7,7 @@ using Dtos.Question;
 using Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,11 +26,19 @@ namespace Business.Concreate
             _answerService = answerService;
         }
 
-        public async Task<Response<NoContent>> CreateAsync(CreateQuestionDto createQuestionDto)
+        public async Task<Response<QuestionDto>> CreateAsync(CreateQuestionDto createQuestionDto)
         {
-            if(createQuestionDto.Answers.Count < 2)
+            if (string.IsNullOrEmpty(createQuestionDto.Title))
             {
-                return Response<NoContent>.Fail("En az 2 şık girilmelidir");
+                return Response<QuestionDto>.Fail("Soru boş olamaz");
+            }
+            if (createQuestionDto.Title.Length < 10)
+            {
+                return Response<QuestionDto>.Fail("Soru çok kısa en az 10 karakterden oluşmalıdır");
+            }
+            if (createQuestionDto.Answers.Count < 2)
+            {
+                return Response<QuestionDto>.Fail("En az 2 şık girilmelidir");
             }
 
 
@@ -46,9 +55,9 @@ namespace Business.Concreate
                 });
             }
             await _answerService.CreateListAsync(createAnswerDtos);
-            return Response<NoContent>.Success();
 
-
+            
+            return Response<QuestionDto>.Success(_mapper.Map<QuestionDto>(question));
         }
 
         public async Task<Response<NoContent>> DeleteAsync(string id)
@@ -65,11 +74,15 @@ namespace Business.Concreate
         public async Task<Response<List<QuestionDto>>> GetAllAsync()
         {
             var questions = await _questionDal.GetAllAsync();
+
             var questionsDto = _mapper.Map<List<QuestionDto>>(questions);
-           
+            foreach (var item in questionsDto)
+            {
+                var answers =await _answerService.GetAnswerByQuestionIdAsync(item.Id);
+                item.Total= answers.Data.Sum(p => p.Vote);
+            }
 
-            //_answerService.CreateListAsync()
-
+            questionsDto = questionsDto.OrderByDescending(p => p.Total).Take(10).ToList();
 
             return Response<List<QuestionDto>>.Success(questionsDto);
         }

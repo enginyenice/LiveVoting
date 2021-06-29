@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Dtos.Answer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -32,10 +33,10 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Vote(string id)
+        [HttpPost("vote")]
+        public async Task<IActionResult> Vote(AnswerVoteAddDto answerVoteAddDto)
         {
-            return Ok(await _answersService.VoteAsync(id));
+            return Ok(await _answersService.VoteAsync(answerVoteAddDto));
 
         }
     }
